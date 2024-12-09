@@ -10,7 +10,7 @@ function loadProducts() {
         return;
     }
 
-    fetch('blufjqxd8iuonrvzwf8k-mysql.services.clever-cloud.com/productos')
+    fetch('https://panaderia-esperanza.onrender.com/productos')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al obtener productos: ' + response.status);
@@ -102,7 +102,7 @@ function loadUserFundsAndGenerateTicket(total = 0) {
     }
 
     // Obtener los fondos del usuario usando POST en lugar de GET
-    fetch('blufjqxd8iuonrvzwf8k-mysql.services.clever-cloud.com/usuario/fondos', {
+    fetch('https://panaderia-esperanza.onrender.com/usuario/fondos', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -161,7 +161,7 @@ function confirmPurchase(ventanum, total) {
     window.productInfo.cantidad = quantity;
 
     // Verificar si el usuario tiene fondos suficientes
-fetch('blufjqxd8iuonrvzwf8k-mysql.services.clever-cloud.com/usuario/fondos', {
+fetch('https://panaderia-esperanza.onrender.com/usuario/fondos', {
     method: 'POST',  // Cambié de GET a POST, para enviar datos en el cuerpo de la solicitud
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId: localStorage.getItem('userId') })  // Enviar el userId correctamente
@@ -179,7 +179,7 @@ fetch('blufjqxd8iuonrvzwf8k-mysql.services.clever-cloud.com/usuario/fondos', {
     }
 
     // Realizar la compra (enviar al backend para actualizar el inventario y fondos)
-    fetch('blufjqxd8iuonrvzwf8k-mysql.services.clever-cloud.com/usuario/confirmarCompra', {
+    fetch('https://panaderia-esperanza.onrender.com/usuario/confirmarCompra', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -228,7 +228,7 @@ document.getElementById('addFundsForm').addEventListener('submit', function(e) {
     }
 
     // Enviar la cantidad de fondos al backend
-    fetch('blufjqxd8iuonrvzwf8k-mysql.services.clever-cloud.com/usuario/agregarFondos', {
+    fetch('https://panaderia-esperanza.onrender.com/usuario/agregarFondos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: parseFloat(amount), userId })  // Incluye userId en el cuerpo de la solicitud
@@ -273,7 +273,7 @@ function loadUserDetails() {
     }
 
     // Obtener datos del usuario desde el backend
-    fetch(`blufjqxd8iuonrvzwf8k-mysql.services.clever-cloud.com/usuario/${userId}`)
+    fetch(`https://panaderia-esperanza.onrender.com/usuario/${userId}`)
     .then(response => {
         if (!response.ok) {
             if (response.status === 404) {
