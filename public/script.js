@@ -194,36 +194,50 @@ function updateProduct() {
     const productData = {
         nombre: document.getElementById("editProductName").value.trim(),
         tipo: document.getElementById("editProductType").value,
-        precio: parseFloat(document.getElementById("editProductPrice").value.trim()),
-        cantidad: parseInt(document.getElementById("editProductQuantity").value.trim(), 10),
+        precio: document.getElementById("editProductPrice").value.trim(),
+        cantidad: document.getElementById("editProductQuantity").value.trim(),
         imagen_url: document.getElementById("editProductImageUrl").value.trim()
     };
 
     let valid = true;
     let errorMessage = "";
 
+    // Validación del nombre
     if (!productData.nombre) {
         errorMessage += "El nombre del producto es obligatorio.\n";
         valid = false;
     }
+
+    // Validación del tipo
     if (productData.tipo === "") {
         errorMessage += "Seleccione un tipo de producto.\n";
         valid = false;
     }
-    if (!productData.precio || productData.precio < 1 || productData.precio > 10000) {
-        errorMessage += "El precio debe estar entre $1 y $10,000.\n";
+
+    // Validación del precio (debe ser un número entero dentro del rango permitido)
+    if (!productData.precio || !Number.isInteger(Number(productData.precio)) || Number(productData.precio) < 1 || Number(productData.precio) > 10000) {
+        errorMessage += "El precio debe ser un número entero entre $1 y $10,000.\n";
         valid = false;
     }
-    if (!productData.cantidad || productData.cantidad < 1 || productData.cantidad > 100) {
-        errorMessage += "La cantidad debe estar entre 1 y 100 unidades.\n";
+
+    // Validación de la cantidad (debe ser un número entero dentro del rango permitido)
+    if (!productData.cantidad || !Number.isInteger(Number(productData.cantidad)) || Number(productData.cantidad) < 1 || Number(productData.cantidad) > 100) {
+        errorMessage += "La cantidad debe ser un número entero entre 1 y 100 unidades.\n";
         valid = false;
     }
+
+    // Validación de la URL de la imagen
     if (!productData.imagen_url) {
         errorMessage += "La URL de la imagen es obligatoria.\n";
         valid = false;
     }
 
+    // Si todos los campos son válidos, proceder con la actualización
     if (valid) {
+        // Convertir el precio y cantidad a números enteros antes de enviarlos al servidor
+        productData.precio = parseInt(productData.precio, 10);
+        productData.cantidad = parseInt(productData.cantidad, 10);
+
         fetch(`/editarProducto/${currentProductId}`, {
             method: 'PUT',
             headers: {
@@ -251,5 +265,6 @@ function updateProduct() {
         alert(errorMessage);
     }
 }
+
 
 
