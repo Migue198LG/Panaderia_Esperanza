@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panadería La Desesperanza</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            color: black; /* Cambiar color del texto principal a negro */
+        }
+        .text-white {
+            color: black !important; /* Asegurarse de que los textos que usan la clase .text-white sean negros */
+        }
+        .header {
+            background-color: #f8f9fa; /* Fondo claro para el encabezado */
+        }
+        .ticket {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .ticket p {
+        margin-bottom: 8px;
+    }
+    .ticket strong {
+        font-weight: bold;
+    }
+    .ticket .ticket-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .ticket .ticket-header h5 {
+        font-size: 24px;
+        color: #333;
+    }
+    .ticket .ticket-info {
+        font-size: 16px;
+        color: #555;
+    }
+    .ticket .ticket-info span {
+        font-weight: bold;
+    }
+    .ticket-footer {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 14px;
+        color: #777;
+    }
+    </style>
+</head>
+
+<body>
+
+    <!-- Encabezado -->
+    <header class="header py-5 text-center">
+        <h1 class="display-3">Panadería La Desesperanza</h1>
+        <p class="lead">¡Pan de temporada, frescura y tradición a tu alcance!</p>
+        <p id="welcomeMessage" class="fs-4"></p>
+        <a href="#inventario" class="btn btn-light btn-lg mt-3">Ver Productos</a>
+    </header>
+
+    <!-- Botón Cerrar Sesión -->
+    <div class="container text-end mt-4">
+        <button id="logoutBtn" class="btn btn-danger btn-lg">Cerrar sesión</button>
+    </div>
+
+    <!-- Botón Agregar Fondos -->
+<div class="container text-end mt-4">
+    <button id="addFundsBtn" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#addFundsModal">Agregar Fondos</button>
+</div>
+
+<!-- Modal Agregar Fondos -->
+<div class="modal fade" id="addFundsModal" tabindex="-1" aria-labelledby="addFundsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFundsModalLabel">Agregar Fondos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addFundsForm">
+                    <div class="mb-3">
+                        <label for="addFundsAmount" class="form-label">Monto a agregar</label>
+                        <input class="form-control" id="addFundsAmount">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar Fondos</button>
+                </form>
+                <div id="fundsStatus" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Sección Galería -->
+    <section class="py-5" id="galeria">
+        <div class="container">
+            <h2 class="text-center text-white">Galería de Productos</h2>
+            <p class="text-center text-white mb-4">Algunos de nuestros productos de temporada</p>
+            <div class="row gallery">
+                <div class="col-6 col-md-3 mb-4">
+                    <img src="images/galletas.jpg" alt="Pan de Muerto" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-3 mb-4">
+                    <img src="images/panaderia.jpg" alt="Calaverita de Azúcar" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-3 mb-4">
+                    <img src="images/pan.jpg" alt="Pan decorado de Halloween" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-3 mb-4">
+                    <img src="images/imagen.jpg" alt="Concha decorada" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Productos -->
+    <section class="py-5" id="inventario">
+        <div class="container">
+            <h2 class="text-center text-white">Nuestros Productos</h2>
+            <p class="text-center text-white mb-4">¡Elige y compra tus productos favoritos!</p>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Precio</th>
+                            <th>Cantidad Disponible</th>
+                            <th>Imagen</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <!-- Las filas de productos se generarán dinámicamente aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+<!-- Modal Comprar Producto -->
+<div class="modal fade" id="buyModal" tabindex="-1" aria-labelledby="buyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buyModalLabel">Comprar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="buyProductForm">
+                    <input type="hidden" id="buyProductId">
+                    <p id="buyProductName" class="fs-4"></p>
+                    <div class="mb-3">
+                        <label for="buyProductQuantity" class="form-label">Cantidad a comprar</label>
+                        <input class="form-control" id="buyProductQuantity">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="generateTicket()">Generar Ticket</button>
+                </form>
+                <hr>
+                <div id="ticketInfo" class="ticket">
+                    <!-- Información del ticket se mostrará aquí -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/catalogo.js"></script>
+    <script src="scripts/logout.js"></script>
+
+</body>
+
+</html>

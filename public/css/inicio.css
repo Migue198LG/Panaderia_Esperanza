@@ -1,0 +1,380 @@
+
+:root {
+    --body-bg: url("https://cdn.pixabay.com/photo/2016/12/16/15/25/christmas-1911637_960_720.jpg") no-repeat center center fixed;
+    --form-bg: rgba(255, 255, 255, 0.85);
+    --text-color: #333;
+    
+    --primary-color: #f02020; /* Rojo navideño */
+    --secondary-color: #27ae60; /* Verde navideño */
+    --hover-color: #c0392b; /* Rojo oscuro */
+    --button-hover-color: rgba(255, 255, 255, 0.2);
+    --light-gray: #bdc3c7;
+    --border-radius: 15px;
+    --font-primary: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    color: var(--text-color);
+    background: var(--body-bg);
+    background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+    background-position: center; /* Centra la imagen */
+    background-attachment: fixed; /* Hace que la imagen se mantenga fija al hacer scroll */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+    background-size: 100% 120%;
+}
+
+.container {
+    background: var(--form-bg);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 450px;
+    margin: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 400;
+    font-size: 2rem; /* Ajustar tamaño para mejor visibilidad */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Sombra para resaltar el texto */
+    display: inline-block;
+    word-wrap: break-word; /* Para ajustar el texto y evitar que se desborde */
+    white-space: normal; /* Asegura que el texto se rompa si es necesario */
+}
+
+.red {
+    color: #f02020; /* Rojo navideño */
+}
+
+.green {
+    color: #27ae60; /* Verde navideño */
+}
+
+.white {
+    color: #ffffff; /* Blanco */
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2.5rem; /* Reduce el tamaño en pantallas pequeñas */
+    }
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: 2px solid var(--light-gray);
+    color: var(--light-gray);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: var(--border-radius);
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tabs button.active {
+    background: var(--secondary-color); /* Verde navideño */
+    color: #fff;
+    border-color: var(--secondary-color); /* Verde navideño */
+}
+
+.tabs button:hover {
+    background: var(--hover-color);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.form-container {
+    display: none;
+}
+
+.form-container.active {
+    display: block;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.input-container i {
+    margin-right: 10px;
+    font-size: 20px;
+    color: var(--text-color);
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--border-radius);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color); /* Rojo navideño */
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: var(--hover-color);
+    transform: scale(1.03);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Ajustar estilos para el contenedor del select */
+.select-container {
+position: relative;
+display: flex;
+align-items: center;
+}
+
+.select-container i {
+position: absolute;
+left: 10px;
+font-size: 18px;
+color: var(--text-color);
+pointer-events: none;
+}
+
+/* Estilizar el select */
+select {
+width: 100%;
+padding: 12px 12px 12px 40px; /* Espacio para el ícono */
+border: 1px solid var(--light-gray);
+border-radius: var(--border-radius);
+background: rgba(255, 255, 255, 0.1);
+color: var(--text-color);
+font-size: 14px;
+transition: all 0.3s ease;
+cursor: pointer;
+appearance: none; /* Quitar el estilo por defecto */
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+background-repeat: no-repeat;
+background-position: right 12px center;
+background-size: 16px;
+}
+
+/* Estilo cuando el select está enfocado */
+select:focus {
+border-color: var(--primary-color);
+background: rgba(255, 255, 255, 0.2);
+outline: none;
+}
+
+/* Cambiar ícono de las opciones */
+option {
+padding: 10px;
+background: rgba(255, 255, 255, 0.9);
+color: var(--text-color);
+font-size: 14px;
+}
+
+
+/* Responsividad */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    .tabs button {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    label {
+        font-size: 12px;
+    }
+
+    input, select {
+        padding: 10px;
+    }
+
+    button {
+        padding: 10px;
+    }
+}
+
+/* Animación de copos de nieve */
+.snowflakes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    background: url('https://cdn.pixabay.com/photo/2017/11/29/11/48/snowflakes-2993127_960_720.png') no-repeat center center fixed;
+    background-size: cover;
+    opacity: 0.3;
+}
+
+.snowflake {
+    position: absolute;
+    top: -50px;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    animation: snowfall linear infinite;
+}
+
+@keyframes snowfall {
+    to {
+        transform: translateY(100vh);
+    }
+}
+
+/* Generar copos de nieve */
+.snowflake {
+    animation-duration: 10s;
+    animation-delay: calc(-5s * var(--i));
+}
+
+.snowflake:nth-child(1) {
+    left: 10%;
+    animation-duration: 8s;
+}
+.snowflake:nth-child(2) {
+    left: 20%;
+    animation-duration: 12s;
+}
+.snowflake:nth-child(3) {
+    left: 30%;
+    animation-duration: 10s;
+}
+.snowflake:nth-child(4) {
+    left: 40%;
+    animation-duration: 15s;
+}
+.snowflake:nth-child(5) {
+    left: 50%;
+    animation-duration: 14s;
+}
+
+/* Estilos para el Modal */
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco con transparencia */
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+}
+
+.modal-header {
+    background-color: var(--primary-color); /* Fondo rojo navideño */
+    color: white;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    padding: 15px;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--light-gray);
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-footer .btn {
+    width: 48%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+}
+
+.modal-footer .btn-secondary {
+    background-color: var(--light-gray);
+    color: #333;
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: var(--hover-color);
+    color: white;
+}
+
+.modal-footer .btn-primary {
+    background-color: var(--secondary-color); /* Verde navideño */
+    color: white;
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #2ecc71; /* Verde más claro al pasar el ratón */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Mejorar el fondo del modal */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro translúcido para el overlay */
+}
+
+/* Hacer el modal más amigable en dispositivos pequeños */
+@media (max-width: 600px) {
+    .modal-dialog {
+        max-width: 90%; /* Hacer que el modal ocupe un 90% del ancho en pantallas pequeñas */
+    }
+
+    .modal-header {
+        font-size: 1.1rem; /* Reducir tamaño del título */
+        padding: 12px;
+    }
+
+    .modal-footer .btn {
+        font-size: 14px;
+        padding: 10px;
+    }
+}

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panadería La Desesperanza</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+
+<body>
+
+    <!-- Encabezado -->
+    <header class="header py-5 text-center">
+        <h1 class="display-3">Panadería La Desesperanza</h1>
+        <p class="lead">¡Pan de temporada, frescura y tradición a tu alcance!</p>
+        <a href="#inventario" class="btn btn-light btn-lg mt-3">Ver Inventario</a>
+    </header>
+
+    <!-- Botón Cerrar Sesión y Consultar Compras -->
+<div class="container text-center mt-4" style="align-items: center;">
+    <!-- Botón Cerrar Sesión -->
+    <button id="logoutBtn" class="btn btn-success btn-lg">Cerrar sesión</button>
+    <!-- Botón Consultar Compras -->
+    <a href="clientes.html" class="btn btn-danger btn-lg">Consultar Compras</a>
+</div>
+
+
+    <!-- Sección Galería -->
+    <section class="py-5 bg-light" id="galeria">
+        <div class="container">
+            <h2 class="text-center">Galería de Productos</h2>
+            <p class="text-center mb-4">Algunos de nuestros productos de Día de Muertos y Halloween</p>
+            <div class="row gallery">
+                <div class="col-6 col-md-3 mb-4">
+                    <img src="images/galletas.jpg" alt="Pan de Muerto" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-3 mb-4">
+                    <img src="images/panaderia.jpg" alt="Calaverita de Azúcar" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-3 mb-4">
+                    <img src="images/pan.jpg" alt="Pan decorado de Halloween" class="img-fluid">
+                </div>
+                <div class="col-6 col-md-3 mb-4">
+                    <img src="images/imagen.jpg" alt="Concha decorada" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Inventario -->
+    <section class="py-5" id="inventario">
+        <div class="container">
+            <h2 class="text-center">Inventario de Productos</h2>
+            <p class="text-center mb-4">Gestiona tu inventario de manera eficiente</p>
+            <div class="d-flex justify-content-center mb-3">
+                <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#createModal">Agregar Producto</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Imagen</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                        <!-- Las filas de productos se generarán dinámicamente aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Agregar Producto -->
+    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalLabel">Agregar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="productForm">
+                        <div class="mb-3">
+                            <label for="productName" class="form-label">Nombre del Producto</label>
+                            <input type="text" class="form-control" id="productName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productType" class="form-label">Tipo</label>
+                            <select id="productType" class="form-select">
+                                <option value="" disabled selected>Seleccione un tipo</option>
+                                <option>Navidad</option>
+                                <option>Noche Buena</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="productPrice" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productQuantity" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="productQuantity" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="productImageUrl" class="form-label">URL de la Imagen</label>
+                            <input type="text" id="productImageUrl" placeholder="URL de la imagen del producto" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="validateForm()">Guardar Producto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Producto -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm">
+                        <input type="hidden" id="editProductId">
+                        <div class="mb-3">
+                            <label for="editProductName" class="form-label">Nombre del Producto</label>
+                            <input type="text" class="form-control" id="editProductName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductType" class="form-label">Tipo</label>
+                            <select id="editProductType" class="form-select">
+                                <option value="" disabled selected>Seleccione un tipo</option>
+                                <option>Navidad</option>
+                                <option>Noche Buena</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductPrice" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="editProductPrice" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductQuantity" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="editProductQuantity" min="0">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductImageUrl" class="form-label">URL de la Imagen</label>
+                            <input type="text" id="editProductImageUrl" class="form-control" placeholder="URL de la imagen del producto">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="updateProduct()">Actualizar Producto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar Producto -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Eliminar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este producto?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteProduct()">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+    <script src="scripts/logout.js"></script>
+
+</body>
+
+</html>
