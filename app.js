@@ -10,10 +10,10 @@ app.use(cors());
 
 // Configuración de la conexión a la base de datos
 const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "migu3l98",  // Usa la contraseña correcta para tu base de datos
-    database: "PanaderiaLaDesesperanza"
+    host: process.env.DB_HOST,       // Dirección del servidor de la base de datos
+    user: process.env.DB_USER,       // Nombre de usuario de la base de datos
+    password: process.env.DB_PASSWORD, // Contraseña de la base de datos
+    database: process.env.DB_NAME 
 });
 
 // Conectar a la base de datos y manejar errores de conexión
@@ -73,7 +73,7 @@ app.post("/registro", (req, res) => {
     }
 
     // Verificar si el email ya está registrado
-    con.query("SELECT * FROM Usuarios WHERE email = ?", [email], (err, resultados) => {
+    con.query("SELECT * FROM usuarios WHERE email = ?", [email], (err, resultados) => {
         if (err) {
             console.error("Error al verificar el email:", err);
             return res.status(500).json({ success: false, message: "Error al verificar el email." });
@@ -91,7 +91,7 @@ app.post("/registro", (req, res) => {
             }
 
             // Insertar el nuevo usuario en la base de datos con rol por defecto o especificado
-            const query = "INSERT INTO Usuarios (nombre, email, contraseña, rol) VALUES (?, ?, ?, ?)";
+            const query = "INSERT INTO usuarios (nombre, email, contraseña, rol) VALUES (?, ?, ?, ?)";
             con.query(query, [name, email, hash, role], (err, result) => {
                 if (err) {
                     console.error("Error al registrar el usuario:", err);
@@ -111,7 +111,7 @@ app.post("/login", (req, res) => {
         return res.status(400).json({ success: false, message: "Por favor, ingresa tu correo y contraseña." });
     }
 
-    con.query("SELECT * FROM Usuarios WHERE email = ?", [email], (err, resultados) => {
+    con.query("SELECT * FROM usuarios WHERE email = ?", [email], (err, resultados) => {
         if (err) {
             console.error("Error al verificar el email:", err);
             return res.status(500).json({ success: false, message: "Error al verificar el email." });
@@ -158,7 +158,7 @@ app.get('/usuario/:id', (req, res) => {
         return res.status(400).json({ error: 'ID de usuario no válido' });
     }
 
-    con.query('SELECT * FROM Usuarios WHERE usuario_id = ?', [userId], (error, results) => {
+    con.query('SELECT * FROM usuarios WHERE usuario_id = ?', [userId], (error, results) => {
         if (error) {
             console.error(`Error al obtener usuario con ID ${userId}:`, error.message);
             return res.status(500).json({ error: 'Error interno del servidor' });
@@ -188,7 +188,7 @@ app.post("/agregarProducto", (req, res) => {
     }
 
     // Verificar si ya existe un producto con el mismo nombre
-    con.query("SELECT * FROM Productos WHERE nombre = ?", [nombre], (err, resultados) => {
+    con.query("SELECT * FROM productos WHERE nombre = ?", [nombre], (err, resultados) => {
         if (err) {
             console.error("Error al verificar producto existente:", err);
             return res.status(500).send("Error al verificar producto.");
@@ -201,7 +201,7 @@ app.post("/agregarProducto", (req, res) => {
 
         // Insertar producto si no existe duplicado
         con.query(
-            "INSERT INTO Productos (nombre, tipo, precio, imagen_url) VALUES (?, ?, ?, ?)",
+            "INSERT INTO productos (nombre, tipo, precio, imagen_url) VALUES (?, ?, ?, ?)",
             [nombre, tipo, precio, imagen_url],
             (err, resultado) => {
                 if (err) {
@@ -210,7 +210,7 @@ app.post("/agregarProducto", (req, res) => {
                 }
 
                 con.query(
-                    "INSERT INTO Inventario (producto_id, cantidad) VALUES (?, ?)",
+                    "INSERT INTO inventario (producto_id, cantidad) VALUES (?, ?)",
                     [resultado.insertId, cantidad],
                     (err) => {
                         if (err) {
@@ -228,9 +228,9 @@ app.post("/agregarProducto", (req, res) => {
 // Obtener todos los productos
 app.get("/productos", (req, res) => {
     const query = `
-    SELECT Productos.producto_id, Productos.nombre, Productos.tipo, Productos.precio, Productos.imagen_url, Inventario.cantidad
-    FROM Productos
-    JOIN Inventario ON Productos.producto_id = Inventario.producto_id
+    SELECT productos.producto_id, productos.nombre, productos.tipo, productos.precio, productos.imagen_url, inventario.cantidad
+    FROM productos
+    JOIN inventario ON productos.producto_id = inventario.producto_id
 `;
 
     con.query(query, (err, productos) => {
@@ -247,10 +247,10 @@ app.get("/productos/:id", (req, res) => {
     const { id } = req.params;
 
     const query = `
-        SELECT Productos.producto_id, Productos.nombre, Productos.tipo, Productos.precio, Inventario.cantidad
-        FROM Productos
-        JOIN Inventario ON Productos.producto_id = Inventario.producto_id
-        WHERE Productos.producto_id = ?
+        SELECT productos.producto_id, productos.nombre, productos.tipo, productos.precio, inventario.cantidad
+        FROM productos
+        JOIN inventario ON productos.producto_id = inventario.producto_id
+        WHERE productos.producto_id = ?
     `;
 
     con.query(query, [id], (err, producto) => {
@@ -277,7 +277,7 @@ app.put("/editarProducto/:id", (req, res) => {
     }
 
     con.query(
-        "UPDATE Productos SET nombre = ?, tipo = ?, precio = ? WHERE producto_id = ?",
+        "UPDATE productos SET nombre = ?, tipo = ?, precio = ? WHERE producto_id = ?",
         [nombre, tipo, precio, id],
         (err) => {
             if (err) {
@@ -286,7 +286,7 @@ app.put("/editarProducto/:id", (req, res) => {
             }
 
             con.query(
-                "UPDATE Inventario SET cantidad = ? WHERE producto_id = ?",
+                "UPDATE inventario SET cantidad = ? WHERE producto_id = ?",
                 [cantidad, id],
                 (err) => {
                     if (err) {
@@ -305,7 +305,7 @@ app.delete("/eliminarProducto/:id", (req, res) => {
     const { id } = req.params;
 
     // Primero, verificamos si el producto está vinculado a alguna compra
-    con.query("SELECT * FROM DetallesCompra WHERE producto_id = ?", [id], (err, results) => {
+    con.query("SELECT * FROM detallescompra WHERE producto_id = ?", [id], (err, results) => {
         if (err) {
             console.error("Error al verificar si el producto está vinculado a alguna compra:", err);
             return res.status(500).send("Error al verificar el producto en DetallesCompra.");
@@ -313,7 +313,7 @@ app.delete("/eliminarProducto/:id", (req, res) => {
 
         // Si el producto está vinculado a alguna compra, solo eliminamos del inventario
         if (results.length > 0) {
-            con.query("DELETE FROM Inventario WHERE producto_id = ?", [id], (err) => {
+            con.query("DELETE FROM inventario WHERE producto_id = ?", [id], (err) => {
                 if (err) {
                     console.error("Error al eliminar inventario:", err);
                     return res.status(500).send("Error al eliminar inventario.");
@@ -322,13 +322,13 @@ app.delete("/eliminarProducto/:id", (req, res) => {
             });
         } else {
             // Si no está vinculado, eliminamos tanto del inventario como de productos
-            con.query("DELETE FROM Inventario WHERE producto_id = ?", [id], (err) => {
+            con.query("DELETE FROM inventario WHERE producto_id = ?", [id], (err) => {
                 if (err) {
                     console.error("Error al eliminar inventario:", err);
                     return res.status(500).send("Error al eliminar inventario.");
                 }
 
-                con.query("DELETE FROM Productos WHERE producto_id = ?", [id], (err) => {
+                con.query("DELETE FROM productos WHERE producto_id = ?", [id], (err) => {
                     if (err) {
                         console.error("Error al eliminar producto:", err);
                         return res.status(500).send("Error al eliminar producto.");
@@ -350,7 +350,7 @@ app.post('/usuario/fondos', (req, res) => {
     }
 
     // Consulta para obtener los fondos del usuario
-    con.query('SELECT fondos FROM Usuarios WHERE usuario_id = ?', [userId], (err, results) => {
+    con.query('SELECT fondos FROM usuarios WHERE usuario_id = ?', [userId], (err, results) => {
         if (err) {
             console.error('Error al obtener los fondos:', err);
             return res.status(500).json({ success: false, message: 'Error interno del servidor' });
@@ -378,7 +378,7 @@ app.post('/usuario/agregarFondos', (req, res) => {
     }
 
     con.query(
-        'UPDATE Usuarios SET fondos = fondos + ? WHERE usuario_id = ?',
+        'UPDATE usuarios SET fondos = fondos + ? WHERE usuario_id = ?',
         [amount, userId],
         (err, result) => {
             if (err) {
@@ -411,7 +411,7 @@ app.post('/usuario/confirmarCompra', (req, res) => {
         }
 
         // 1. Verificar fondos del usuario
-        con.query('SELECT fondos FROM Usuarios WHERE usuario_id = ?', [userId], (err, results) => {
+        con.query('SELECT fondos FROM usuarios WHERE usuario_id = ?', [userId], (err, results) => {
             if (err) {
                 return con.rollback(() => {
                     res.status(500).json({ success: false, message: 'Error al verificar los fondos' });
@@ -427,7 +427,7 @@ app.post('/usuario/confirmarCompra', (req, res) => {
             const fondosRestantes = results[0].fondos - total;
 
             // 2. Actualizar los fondos del usuario
-            con.query('UPDATE Usuarios SET fondos = ? WHERE usuario_id = ?', [fondosRestantes, userId], (err) => {
+            con.query('UPDATE usuarios SET fondos = ? WHERE usuario_id = ?', [fondosRestantes, userId], (err) => {
                 if (err) {
                     return con.rollback(() => {
                         res.status(500).json({ success: false, message: 'Error al actualizar los fondos' });
@@ -435,7 +435,7 @@ app.post('/usuario/confirmarCompra', (req, res) => {
                 }
 
                 // 3. Verificar cantidad disponible en inventario
-                con.query('SELECT cantidad FROM Inventario WHERE producto_id = ?', [productoId], (err, inventario) => {
+                con.query('SELECT cantidad FROM inventario WHERE producto_id = ?', [productoId], (err, inventario) => {
                     if (err) {
                         return con.rollback(() => {
                             res.status(500).json({ success: false, message: 'Error al verificar inventario' });
@@ -451,7 +451,7 @@ app.post('/usuario/confirmarCompra', (req, res) => {
                     const nuevaCantidad = inventario[0].cantidad - cantidad;
 
                     // 4. Actualizar inventario
-                    con.query('UPDATE Inventario SET cantidad = ? WHERE producto_id = ?', [nuevaCantidad, productoId], (err) => {
+                    con.query('UPDATE inventario SET cantidad = ? WHERE producto_id = ?', [nuevaCantidad, productoId], (err) => {
                         if (err) {
                             return con.rollback(() => {
                                 res.status(500).json({ success: false, message: 'Error al actualizar inventario' });
@@ -459,7 +459,7 @@ app.post('/usuario/confirmarCompra', (req, res) => {
                         }
 
                         // 5. Registrar la compra en la tabla Compras
-                        con.query('INSERT INTO Compras (usuario_id, numero_venta, total_a_pagar) VALUES (?, ?, ?)', [userId, ventaId, total], (err, resultCompra) => {
+                        con.query('INSERT INTO compras (usuario_id, numero_venta, total_a_pagar) VALUES (?, ?, ?)', [userId, ventaId, total], (err, resultCompra) => {
                             if (err) {
                                 return con.rollback(() => {
                                     res.status(500).json({ success: false, message: 'Error al registrar la compra' });
@@ -469,7 +469,7 @@ app.post('/usuario/confirmarCompra', (req, res) => {
                             const compraId = resultCompra.insertId;
 
                             // 6. Registrar los detalles de la compra (productos comprados)
-                            con.query('INSERT INTO DetallesCompra (compra_id, producto_id, cantidad, precio_unitario, total) VALUES (?, ?, ?, ?, ?)', [compraId, productoId, cantidad, total / cantidad, total], (err) => {
+                            con.query('INSERT INTO detallescompra (compra_id, producto_id, cantidad, precio_unitario, total) VALUES (?, ?, ?, ?, ?)', [compraId, productoId, cantidad, total / cantidad, total], (err) => {
                                 if (err) {
                                     return con.rollback(() => {
                                         res.status(500).json({ success: false, message: 'Error al registrar los detalles de la compra' });
@@ -506,13 +506,13 @@ app.get('/clientes', (req, res) => {
     c.total_a_pagar,
     c.fecha_compra
     FROM 
-        Compras c
+        compras c
     JOIN 
-        Usuarios u ON c.usuario_id = u.usuario_id
+        usuarios u ON c.usuario_id = u.usuario_id
     JOIN 
-        DetallesCompra dc ON c.compra_id = dc.compra_id
+        detallescompra dc ON c.compra_id = dc.compra_id
     JOIN 
-        Productos p ON dc.producto_id = p.producto_id
+        productos p ON dc.producto_id = p.producto_id
     ORDER BY 
         c.fecha_compra DESC;
     `;
