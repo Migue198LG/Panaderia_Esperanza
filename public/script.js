@@ -1,6 +1,6 @@
 // Cargar productos y mostrarlos en la tabla
 function loadProducts() {
-    fetch('http://localhost:3000/productos')
+    fetch('https://panaderia-esperanza.onrender.com/productos')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al obtener productos: ' + response.status);

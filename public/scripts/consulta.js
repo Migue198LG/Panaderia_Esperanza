@@ -1,6 +1,6 @@
 // Función para cargar clientes y mostrarlos en la tabla
 function loadClients() {
-    fetch('http://localhost:3000/clientes')
+    fetch('https://panaderia-esperanza.onrender.com/clientes')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al obtener los datos: ' + response.status);
