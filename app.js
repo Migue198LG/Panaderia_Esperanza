@@ -10,10 +10,6 @@ app.use(cors());
 
 // Configuración de la conexión a la base de datos
 const con = mysql.createConnection({
-    console.log(process.env.DB_HOST);
-    console.log(process.env.DB_USERNAME);
-    console.log(process.env.DB_PASSWORD);
-    console.log(process.env.DB_DBNAME);
     host: process.env.DB_HOST,       // Dirección del servidor de la base de datos
     user: process.env.DB_USER,       // Nombre de usuario de la base de datos
     password: process.env.DB_PASSWORD, // Contraseña de la base de datos
