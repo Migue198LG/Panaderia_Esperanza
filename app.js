@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
@@ -10,10 +11,10 @@ app.use(cors());
 
 // Configuración de la conexión a la base de datos
 const con = mysql.createConnection({
-    host: process.env.DB_HOST,       // Dirección del servidor de la base de datos
-    user: process.env.DB_USER,       // Nombre de usuario de la base de datos
-    password: process.env.DB_PASSWORD, // Contraseña de la base de datos
-    database: process.env.DB_NAME 
+    host: process.env.DB_HOST, 
+    user: process.env.DB_USERNAME, 
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DBNAME,
 });
 
 // Conectar a la base de datos y manejar errores de conexión
