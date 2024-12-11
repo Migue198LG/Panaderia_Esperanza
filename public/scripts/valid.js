@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
             console.log(user); // Agrega esta línea para verificar los datos
     
-            fetch('https://panaderia-esperanza.onrender.com/registro', {
+            fetch('/registro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(user)
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 password: passwordLoginInput.value,
             };
     
-            fetch('https://panaderia-esperanza.onrender.com/login', {
+            fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userCredentials)
