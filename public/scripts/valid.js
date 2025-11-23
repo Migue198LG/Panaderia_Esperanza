@@ -11,29 +11,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordLoginInput = document.getElementById("passwordLogin");
 
     // Expresiones regulares
-    const nameRegex = /^[A-Za-z\s]+$/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const nameRegex = /^[A-Za-z\s]+$/; // Solo letras y espacios
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Formato válido de correo
 
     // Validación del formulario de registro
     const validateRegisterForm = () => {
         let isValid = true;
 
+        // Validación del nombre completo
         if (!nameRegex.test(nameInput.value)) {
             alert("El nombre solo debe contener letras y espacios.");
             isValid = false;
         }
 
+        // Validación del correo electrónico
         if (!emailRegex.test(emailInput.value)) {
             alert("Por favor, ingresa un correo electrónico válido.");
             isValid = false;
         }
 
+        // Validación de la contraseña
         const password = passwordInput.value;
         if (!/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
             alert("La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula y un número.");
             isValid = false;
         }
 
+        // Validación de la confirmación de la contraseña
         if (password !== confirmPasswordInput.value) {
             alert("Las contraseñas no coinciden.");
             isValid = false;
@@ -42,9 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return isValid;
     };
 
-    // Evento para el botón de registro - CON MÚLTIPLES OPCIONES
+    // Evento para el botón de registro
     registerBtn.addEventListener("click", (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Evita el envío del formulario por defecto
         if (validateRegisterForm()) {
             const user = {
                 name: nameInput.value,
@@ -53,50 +57,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 role: roleSelect.value
             };
     
-            console.log("Datos de registro:", user);
+            console.log(user); // Agrega esta línea para verificar los datos
     
-            // Lista de posibles endpoints a probar
-            const possibleEndpoints = [
-                'https://panaderia-esperanza.onrender.com/registro',
-                'https://panaderia-esperanza.onrender.com/auth/registro',
-                'https://panaderia-esperanza.onrender.com/api/registro',
-                'https://panaderia-esperanza.onrender.com/signup',
-                'https://panaderia-esperanza.onrender.com/auth/signup',
-                'https://panaderia-esperanza.onrender.com/api/signup'
-            ];
-    
-            // Función para intentar registro en diferentes endpoints
-            const tryRegister = async (endpoints) => {
-                for (const endpoint of endpoints) {
-                    try {
-                        console.log(`Intentando registrar en: ${endpoint}`);
-                        const response = await fetch(endpoint, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(user)
-                        });
-    
-                        console.log(`Respuesta de ${endpoint}:`, response.status);
-    
-                        if (response.ok) {
-                            const data = await response.json();
-                            console.log("Registro exitoso:", data);
-                            alert("Registro exitoso.");
-                            document.getElementById('registerForm').reset();
-                            return true;
-                        }
-                    } catch (error) {
-                        console.log(`Error en ${endpoint}:`, error.message);
-                    }
+            fetch('https://panaderia-esperanza.onrender.com/auth/registro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Respuesta no válida del servidor: " + response.statusText);
                 }
-                return false;
-            };
-    
-            tryRegister(possibleEndpoints).then(success => {
-                if (!success) {
-                    alert("No se pudo conectar con el servidor. Verifica que el backend esté ejecutándose.");
+                return response.json();
+            })
+            .then(data => {
+                console.log("Datos recibidos:", data);
+                if (data.success) {
+                    alert("Registro exitoso.");
+                    document.getElementById('registerForm').reset();
+                } else {
+                    alert(data.message);
                 }
-            });                    
+            })
+            .catch(error => {
+                console.error("Error capturado en catch:", error);
+                alert("Error de conexión o de servidor.");
+            });                     
         }
     });
 
@@ -104,11 +90,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const validateLoginForm = () => {
         let isValid = true;
 
+        // Validación del nombre de usuario (email)
         if (!emailRegex.test(nameLoginInput.value)) {
             alert("Por favor, ingresa un correo electrónico válido.");
             isValid = false;
         }
 
+        // Validación de la contraseña
         if (!passwordLoginInput.value) {
             alert("La contraseña es requerida.");
             isValid = false;
@@ -117,9 +105,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return isValid;
     };
 
-    // Evento para el botón de inicio de sesión - CON MÚLTIPLES OPCIONES
+    // Evento para el botón de inicio de sesión
     loginBtn.addEventListener("click", (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Evita el envío del formulario por defecto
         
         if (validateLoginForm()) {
             const userCredentials = {
@@ -127,58 +115,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 password: passwordLoginInput.value,
             };
     
-            // Lista de posibles endpoints a probar
-            const possibleEndpoints = [
-                'https://panaderia-esperanza.onrender.com/login',
-                'https://panaderia-esperanza.onrender.com/auth/login',
-                'https://panaderia-esperanza.onrender.com/api/login',
-                'https://panaderia-esperanza.onrender.com/signin',
-                'https://panaderia-esperanza.onrender.com/auth/signin'
-            ];
+            fetch('https://panaderia-esperanza.onrender.com/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(userCredentials)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Respuesta no válida del servidor: " + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log(data.usuario.rol);  // Muestra el rol recibido desde el servidor
     
-            // Función para intentar login en diferentes endpoints
-            const tryLogin = async (endpoints) => {
-                for (const endpoint of endpoints) {
-                    try {
-                        console.log(`Intentando login en: ${endpoint}`);
-                        const response = await fetch(endpoint, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(userCredentials)
-                        });
+                    alert("Inicio de sesión exitoso.");
     
-                        console.log(`Respuesta de ${endpoint}:`, response.status);
+                    // Guardamos el ID del usuario en el localStorage
+                    localStorage.setItem('userId', data.usuario.usuario_id); // Cambiado a usuario_id
     
-                        if (response.ok) {
-                            const data = await response.json();
-                            console.log("Login exitoso:", data);
-                            
-                            if (data.success) {
-                                alert("Inicio de sesión exitoso.");
-                                localStorage.setItem('userId', data.usuario.usuario_id);
-    
-                                if (data.usuario.rol === 'administrador') {
-                                    window.location.href = 'panaderia.html';
-                                } else {
-                                    window.location.href = 'panaderia_cliente.html';
-                                }
-                                return true;
-                            } else {
-                                alert(data.message || "Credenciales incorrectas");
-                                return true; // El endpoint funciona pero las credenciales son incorrectas
-                            }
-                        }
-                    } catch (error) {
-                        console.log(`Error en ${endpoint}:`, error.message);
+                    // Verifica el rol del usuario y redirige según corresponda
+                    if (data.usuario.rol === 'administrador') {
+                        window.location.href = 'panaderia.html';  // Redirigir a la página de administración
+                    } else {
+                        window.location.href = 'panaderia_cliente.html';  // Redirigir a la página de cliente
                     }
+                } else {
+                    alert(data.message);
                 }
-                return false;
-            };
-    
-            tryLogin(possibleEndpoints).then(success => {
-                if (!success) {
-                    alert("No se pudo conectar con el servidor. Verifica que el backend esté ejecutándose.");
-                }
+            })
+            .catch(error => {
+                console.error("Error capturado en catch:", error);
+                alert("Error de conexión o de servidor.");
             });
         }
     });
