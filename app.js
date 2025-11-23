@@ -42,7 +42,7 @@ const validarNombre = (nombre) => /^[a-zA-Z\s]+$/.test(nombre);
 // Validación de contraseña (mínimo 8 caracteres, al menos 1 número, 1 mayúscula)
 const validarContraseña = (contraseña) => /^(?=.*\d)(?=.*[A-Z]).{8,}$/.test(contraseña);
 
-app.post("/registro", (req, res) => {
+app.post("https://panaderia-esperanza.onrender.com/registro", (req, res) => {
     console.log("Datos recibidos en el body:", req.body); // Log para verificar los datos
 
     const { name, email, password, role } = req.body;
@@ -105,7 +105,7 @@ app.post("/registro", (req, res) => {
     });
 });
 
-app.post("/login", (req, res) => {
+app.post("https://panaderia-esperanza.onrender.com/login", (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -151,7 +151,7 @@ app.post("/login", (req, res) => {
 });
 
 // Obtener detalles del usuario
-app.get('/usuario/:id', (req, res) => {
+app.get('https://panaderia-esperanza.onrender.com/usuario/:id', (req, res) => {
     const userId = req.params.id;
 
     // Asegurarnos de que el userId sea un número válido
@@ -181,7 +181,7 @@ app.get('/usuario/:id', (req, res) => {
 // Rutas de productos
 
 // Crear un nuevo producto con verificación de duplicados
-app.post("/agregarProducto", (req, res) => {
+app.post("https://panaderia-esperanza.onrender.com/agregarProducto", (req, res) => {
     const { nombre, tipo, precio, cantidad, imagen_url } = req.body;
 
     if (!nombre || !tipo || !precio || precio <= 0 || !cantidad || cantidad < 0) {
@@ -227,7 +227,7 @@ app.post("/agregarProducto", (req, res) => {
 });
 
 // Obtener todos los productos
-app.get("/productos", (req, res) => {
+app.get("https://panaderia-esperanza.onrender.com/productos", (req, res) => {
     const query = `
     SELECT productos.producto_id, productos.nombre, productos.tipo, productos.precio, productos.imagen_url, inventario.cantidad
     FROM productos
@@ -244,7 +244,7 @@ app.get("/productos", (req, res) => {
 });
 
 // Obtener un producto específico por su ID
-app.get("/productos/:id", (req, res) => {
+app.get("https://panaderia-esperanza.onrender.com/productos/:id", (req, res) => {
     const { id } = req.params;
 
     const query = `
@@ -269,7 +269,7 @@ app.get("/productos/:id", (req, res) => {
 });
 
 // Actualizar un producto
-app.put("/editarProducto/:id", (req, res) => {
+app.put("https://panaderia-esperanza.onrender.com/editarProducto/:id", (req, res) => {
     const { id } = req.params;
     const { nombre, tipo, precio, cantidad } = req.body;
 
@@ -302,7 +302,7 @@ app.put("/editarProducto/:id", (req, res) => {
 });
 
 // Eliminar un producto
-app.delete("/eliminarProducto/:id", (req, res) => {
+app.delete("https://panaderia-esperanza.onrender.com/eliminarProducto/:id", (req, res) => {
     const { id } = req.params;
 
     // Primero, verificamos si el producto está vinculado a alguna compra
@@ -343,7 +343,7 @@ app.delete("/eliminarProducto/:id", (req, res) => {
 
 
 // Obtener los fondos de un usuario
-app.post('/usuario/fondos', (req, res) => {
+app.post('https://panaderia-esperanza.onrender.com/usuario/fondos', (req, res) => {
     const { userId } = req.body;  // Obtener el userId desde el cuerpo de la solicitud
 
     if (!userId || isNaN(userId)) {
@@ -370,7 +370,7 @@ app.post('/usuario/fondos', (req, res) => {
 
 
 // Agregar fondos al usuario
-app.post('/usuario/agregarFondos', (req, res) => {
+app.post('https://panaderia-esperanza.onrender.com/usuario/agregarFondos', (req, res) => {
     const { amount, userId } = req.body;
 
     // Validaciones de entrada
@@ -397,7 +397,7 @@ app.post('/usuario/agregarFondos', (req, res) => {
 });
 
 // Confirmar la compra de un producto
-app.post('/usuario/confirmarCompra', (req, res) => {
+app.post('https://panaderia-esperanza.onrender.com/usuario/confirmarCompra', (req, res) => {
     const { userId, productoId, cantidad, ventaId, total } = req.body;
 
     // Validar los parámetros
